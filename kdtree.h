@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <exception>
 #include <functional>
+#include<time.h>
+#include<chrono>
 
 namespace kdt
 {
@@ -18,11 +20,9 @@ namespace kdt
 		KDTree() : root_(nullptr) {};
 		KDTree(const std::vector<PointT>& points) : root_(nullptr) { build(points); }
 
-		~KDTree() { clear(); }
 
 		void build(const std::vector<PointT>& points)
 		{
-			clear();
 
 			points_ = points;
 
@@ -32,13 +32,6 @@ namespace kdt
 			root_ = buildRecursive(indices.data(), (int)points.size(), 0);
 		}
 
-
-		void clear()
-		{
-			clearRecursive(root_);
-			root_ = nullptr;
-			points_.clear();
-		}
 
 		bool validate() const
 		{
@@ -65,7 +58,7 @@ namespace kdt
 				*minDist = _minDist;
 
 			return guess;
-		}		
+		}
 
 		std::vector<int> radiusSearch(const PointT& query, double radius) const
 		{
@@ -77,9 +70,9 @@ namespace kdt
 	private:
 		struct Node
 		{
-			int idx;       
-			Node* next[2]; 
-			int axis;      
+			int idx;
+			Node* next[2];
+			int axis;
 
 			Node() : idx(-1), axis(-1) { next[0] = next[1] = nullptr; }
 		};
@@ -122,7 +115,7 @@ namespace kdt
 				return nullptr;
 
 			const int axis = depth % PointT::DIM;
-			const int mid = (npoints - 1) / 2;
+			const int mid = npoints / 2;
 
 			std::nth_element(indices, indices + mid, indices + npoints, [&](int lhs, int rhs)
 				{
@@ -139,23 +132,7 @@ namespace kdt
 			return node;
 		}
 
-
-		void clearRecursive(Node* node)
-		{
-			if (node == nullptr)
-				return;
-
-			if (node->next[0])
-				clearRecursive(node->next[0]);
-
-			if (node->next[1])
-				clearRecursive(node->next[1]);
-
-			delete node;
-		}
-
-
-		void validateRecursive(const Node* node, int depth) const
+		/*void validateRecursive(const Node* node, int depth) const
 		{
 			if (node == nullptr)
 				return;
@@ -178,7 +155,7 @@ namespace kdt
 
 			if (node1)
 				validateRecursive(node1, depth + 1);
-		}
+		}*/
 
 		static double distance(const PointT& p, const PointT& q)
 		{
@@ -229,11 +206,12 @@ namespace kdt
 			const double diff = fabs(query[axis] - train[axis]);
 			if (diff < radius)
 				radiusSearchRecursive(query, node->next[!dir], indices, radius);
+
 		}
 
-		Node* root_;                 
-		std::vector<PointT> points_; 
+		Node* root_;
+		std::vector<PointT> points_;
 	};
-} 
+}
 
 #endif 

@@ -6,6 +6,7 @@
 #include "kdtree.h"
 
 using namespace std;
+using namespace cv;
 
 class MyPoint : public std::array<double, 2>
 {
@@ -27,17 +28,9 @@ int main(int argc, char** argv)
 	const int seed = argc > 1 ? std::stoi(argv[1]) : 0;
 	srand(seed);
 
-
 	const int width = 500;		
 	const int height = 500;
-	int width1;		
-	int height1;
-	cout << "Vui long nhap chieu rong: ";
-	cin >> width1;
-	cout << "Vui long nhap chieu dai: ";
-	cin >> height1;
-	cv::Mat img = cv::Mat::zeros(cv::Size(width, height), CV_8UC3);
-
+	Mat img = imread("C:/Users/Admin/source/repos/K-d tree visualization/map.png", 1);
 
 	int npoints;
 	cout << "Vui long nhap so diem: ";
@@ -56,7 +49,7 @@ int main(int argc, char** argv)
 
 	kdt::KDTree<MyPoint> kdtree(points);
 
-	const MyPoint query(0.5 * width1, 0.5 * height1);
+	const MyPoint query(0.5 * width, 0.5 * height);
 	cv::circle(img, cv::Point2d(query), 1, cv::Scalar(0, 0, 255), -1);
 
 
@@ -78,7 +71,6 @@ int main(int argc, char** argv)
 
 	cv::imshow("Nearest neigbor search", I0);
 	cv::imshow("Radius search", I2);
-
 	cv::waitKey(0);
 	return 0;
 }
