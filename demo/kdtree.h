@@ -132,31 +132,6 @@ namespace kdt
 			return node;
 		}
 
-		/*void validateRecursive(const Node* node, int depth) const
-		{
-			if (node == nullptr)
-				return;
-
-			const int axis = node->axis;
-			const Node* node0 = node->next[0];
-			const Node* node1 = node->next[1];
-
-			if (node0 && node1)
-			{
-				if (points_[node->idx][axis] < points_[node0->idx][axis])
-					throw Exception();
-
-				if (points_[node->idx][axis] > points_[node1->idx][axis])
-					throw Exception();
-			}
-
-			if (node0)
-				validateRecursive(node0, depth + 1);
-
-			if (node1)
-				validateRecursive(node1, depth + 1);
-		}*/
-
 		static double distance(const PointT& p, const PointT& q)
 		{
 			double dist = 0;
@@ -203,9 +178,9 @@ namespace kdt
 			const int dir = query[axis] < train[axis] ? 0 : 1;
 			radiusSearchRecursive(query, node->next[dir], indices, radius);
 
-			//const double diff = fabs(query[axis] - train[axis]);
-			//if (diff < radius)
-			//	radiusSearchRecursive(query, node->next[!dir], indices, radius);
+			const double diff = fabs(query[axis] - train[axis]);
+			if (diff < radius)
+				radiusSearchRecursive(query, node->next[!dir], indices, radius);
 
 		}
 
